@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Story ✨</title>
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Quicksand:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg,
+                    #ffe5ec 0%,
+                    #ffc2d1 25%,
+                    #ffb3c1 50%,
+                    #ff85a1 75%,
+                    #fde2e4 100%);
+            background-size: 400% 400%;
+            animation: gradientFlow 15s ease infinite;
+            font-family: 'Quicksand', sans-serif;
+            overflow-x: hidden;
+            color: #4a4a4a;
+            position: relative;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Hide standard HTML audio controller */
+        audio {
+            display: none;
+        }
+
+        /* Custom Cursor & Trail */
+        .custom-cursor {
+            width: 25px;
+            height: 25px;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.1s ease;
+        }
+
+        .custom-cursor svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 5px rgba(255, 77, 109, 0.6));
+        }
+
+        .cursor-trail-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .heart-particle {
+            position: absolute;
+            font-size: 14px;
+            pointer-events: none;
+            animation: floatParticle 1.5s ease-out forwards;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(var(--dx), var(--dy)) scale(0.2) rotate(var(--rot));
+                opacity: 0;
+            }
+        }
+
+        /* Floating Music Control */
+        .music-control {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            width: 55px;
+            height: 55px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 8px 20px rgba(201, 24, 74, 0.25);
+            transition: transform 0.3s ease, box-shadow 0.3s;
+        }
+
+        .music-control:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(201, 24, 74, 0.4);
+        }
+
+        .music-disc {
+            font-size: 1.6rem;
+            animation: spin 4s linear infinite;
+            animation-play-state: running;
+        }
+
+        .music-control.paused .music-disc {
+            animation-play-state: paused;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Floating Hearts Layer */
+        .floating-hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 1.5rem;
+            color: rgba(201, 24, 74, 0.45);
+            animation: floatHeart var(--float-duration, 6s) ease-in-out infinite;
+            animation-delay: var(--delay, 0s);
+        }
+
+        @keyframes floatHeart {
+            0% { transform: translate(0, 100vh) rotate(0deg); }
+            100% { transform: translate(var(--translate-x, 0), -100vh) rotate(360deg); }
+        }
+
+        /* Welcome Section */
+        .welcome {
+            text-align: center;
+            padding: 5rem 2rem 3rem;
+            position: relative;
+            z-index: 3;
+        }
+
+        .welcome h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #a4133c;
+            text-shadow: 2px 2px 4px rgba(255, 75, 110, 0.3);
+            margin-bottom: 1.5rem;
+            animation: titleFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .welcome p {
+            font-size: 1.2rem;
+            font-weight: 500;
+            max-width: 600px;
+            color: #590d22;
+            margin: 0.5rem auto;
+            line-height: 1.6;
+        }
+
+        /* Retro Polaroid Memory Cards */
+        .memory-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3.5rem;
+            z-index: 3;
+            position: relative;
+        }
+
+        .memory-card {
+            background: #ffffff;
+            border-radius: 4px;
+            padding: 1.2rem 1.2rem 3rem 1.2rem; /* Thick bottom border for Polaroid style */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08), 0 3px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
+            position: relative;
+        }
+
+        /* Polaroid Washi Tape Effect */
+        .memory-card::after {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95px;
+            height: 25px;
+            background: rgba(255, 117, 143, 0.5);
+            border-left: 2px dashed rgba(201, 24, 74, 0.2);
+            border-right: 2px dashed rgba(201, 24, 74, 0.2);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            z-index: 5;
+        }
+
+        /* Alternating Polaroid Tilt */
+        .memory-card:nth-child(odd) {
+            transform: rotate(-2.5deg);
+        }
+
+        .memory-card:nth-child(even) {
+            transform: rotate(2.5deg);
+        }
+
+        .memory-card:hover {
+            transform: scale(1.05) rotate(0deg) translateY(-8px) !important;
+            box-shadow: 0 20px 40px rgba(201, 24, 74, 0.25);
+            z-index: 10;
+        }
+
+        .memory-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 2px;
+            margin-bottom: 1.2rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .memory-date {
+            font-family: 'Dancing Script', cursive;
+            color: #c9184a;
+            font-size: 1.6rem;
+            margin-bottom: 0.6rem;
+            text-align: center;
+        }
+
+        .memory-caption {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.5;
+            color: #666;
+            text-align: center;
+        }
+
+        /* Interactive Promises Accordion */
+        .promises-section {
+            max-width: 650px;
+            margin: 5rem auto;
+            padding: 0 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 3;
+        }
+
+        .promises-section h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: #c9184a;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(255, 75, 110, 0.3);
+        }
+
+        .promises-container {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 12px 30px rgba(201, 24, 74, 0.15);
+            text-align: left;
+        }
+
+        .promise-item {
+            border-bottom: 1px dashed rgba(201, 24, 74, 0.25);
+            padding: 1.2rem 0.5rem;
+        }
+
+        .promise-item:last-child {
+            border-bottom: none;
+        }
+
+        .promise-trigger {
+            width: 100%;
+            background: none;
+            border: none;
+            text-align: left;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #590d22;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .promise-trigger:hover {
+            color: #c9184a;
+        }
+
+        .promise-trigger::after {
+            content: '♥';
+            font-size: 1rem;
+            color: rgba(201, 24, 74, 0.4);
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .promise-item.active .promise-trigger::after {
+            transform: scale(1.3);
+            color: #c9184a;
+        }
+
+        .promise-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
+        }
+
+        .promise-content p {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: #61565a;
+            padding: 0.8rem 0 0;
+            line-height: 1.6;
+        }
+
+        .promise-item.active .promise-content {
+            max-height: 200px;
+        }
+
+        /* Final Message Section */
+        .final-message {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            margin-top: 5rem;
+            position: relative;
+            z-index: 3;
+        }
+
+        .final-message h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.2rem;
+            color: #a4133c;
+            margin-bottom: 2rem;
+            animation: heartbeat 2s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+        }
+
+        .final-message p {
+            font-size: 1.2rem;
+            font-weight: 500;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.8;
+            color: #590d22;
+        }
+
+        .goodbye-btn {
+            display: inline-block;
+            padding: 1.1rem 2.4rem;
+            font-size: 1.15rem;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            background: linear-gradient(45deg, #c9184a, #ff758f);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 18px rgba(201, 24, 74, 0.4);
+            animation: floatBtn 3s infinite ease-in-out;
+        }
+
+        .goodbye-btn:hover {
+            transform: translateY(-5px) scale(1.05) !important;
+            box-shadow: 0 10px 25px rgba(201, 24, 74, 0.6);
+        }
+
+        @keyframes floatBtn {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .welcome h1 { font-size: 2.5rem; }
+            .welcome p { font-size: 1.05rem; }
+            .memory-container { grid-template-columns: 1fr; gap: 2.5rem; max-width: 90%; }
+            .promises-section h2 { font-size: 2.4rem; }
+            .final-message h2 { font-size: 2.5rem; }
+            .final-message p { font-size: 1.05rem; }
+            .goodbye-btn { padding: 0.9rem 2rem; font-size: 1rem; }
+            .music-control { top: 15px; right: 15px; width: 45px; height: 45px; }
+            .music-disc { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background music -->
+    <audio id="bg-music" loop autoplay>
+        <source src="a1.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Floating music controller -->
+    <div class="music-control" id="music-toggle" title="Toggle Music">
+        <div class="music-disc">🎵</div>
+    </div>
+
+    <!-- Heart Cursor components -->
+    <div class="custom-cursor">
+        <svg viewBox="0 0 24 24">
+            <path fill="#ff4d6d" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+    </div>
+    <div class="cursor-trail-container"></div>
+
+    <div class="floating-hearts">
+        <!-- Floating emojis fallback / styling base -->
+        <div class="heart" style="--float-duration: 6s; --delay: 0s; --translate-x: 20px;">💝</div>
+        <div class="heart" style="--float-duration: 8s; --delay: 1s; --translate-x: -30px;">💖</div>
+        <div class="heart" style="--float-duration: 7s; --delay: 2s; --translate-x: 40px;">💗</div>
+        <div class="heart" style="--float-duration: 9s; --delay: 3s; --translate-x: -20px;">💓</div>
+        <div class="heart" style="--float-duration: 5s; --delay: 4s; --translate-x: 30px;">💕</div>
+    </div>
+
+    <section class="welcome">
+        <h1>Our Beautiful Love Story</h1>
+        <p>Every single moment spent by your side has been absolute magic. Let's cherish these precious memories ...</p>
+    </section>
+
+    <div class="memory-container">
+        <div class="memory-card">
+            <img src="./d11.jpeg" alt="First Date" class="memory-img">
+            <div class="memory-date">Her Smile Says It All</div>
+            <div class="memory-caption">You are my dream come true, the best thing that has ever happened to me.❤️</div>
+        </div>
+        <div class="memory-card">
+            <img src="./d12.jpeg" alt="Beach Day" class="memory-img">
+            <div class="memory-date">Together Vibes</div>
+            <div class="memory-caption">Every single second spent by your side is a second of absolute magic.😊💕</div>
+        </div>
+        <div class="memory-card">
+            <img src="./d13.jpeg" alt="Movie Night" class="memory-img">
+            <div class="memory-date">Pretty Soul</div>
+            <div class="memory-caption">You hold my heart in your hands, and I wouldn't want it any other way.🌸💖</div>
+        </div>
+    </div>
+
+    <!-- Promises Accordion Section -->
+    <section class="promises-section">
+        <h2>My Promises to You 🌸</h2>
+        <div class="promises-container">
+            <div class="promise-item">
+                <button class="promise-trigger">I Promise to Always Stand by Your Side 🤝</button>
+                <div class="promise-content">
+                    <p>No matter where life takes us, I will walk with you hand-in-hand, supporting your dreams and holding you close in every storm. ✨</p>
+                </div>
+            </div>
+            <div class="promise-item">
+                <button class="promise-trigger">I Promise to Love You More Each Day ❤️</button>
+                <div class="promise-content">
+                    <p>I will cherish, respect, and adore you more with every rising sun, giving you all the warmth, patience, and love you deserve. 💖</p>
+                </div>
+            </div>
+            <div class="promise-item">
+                <button class="promise-trigger">I Promise to Keep Choosing You, Always ♾️</button>
+                <div class="promise-content">
+                    <p>In a world full of change, I will choose you today, tomorrow, and for all the days of my life. You are my forever. 💕</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="final-message">
+        <h2>Thank You for Loving Me</h2>
+        <p>Every touch, every glance, and every quiet moment we share has become my favorite story. 💫<br>
+            Thank you for your warmth, your patience, and for loving me in a way that makes me want to be a better person.<br>
+            You are my home, my laughter, and my greatest adventure. 🌹</p>
+        <p>I promise to love you, cherish you, and hold you close through all the chapters of our lives. You have my whole heart, always. ✨</p>
+        <a href="#" class="goodbye-btn">My Heart is Yours Forever 💝</a>
+    </section>
+
+    <script>
+        // Custom Cursor & Trail Control
+        const cursor = document.querySelector('.custom-cursor');
+        const trailContainer = document.querySelector('.cursor-trail-container');
+        const trailSymbols = ['💖', '🌹', '❤️', '💕', '✨', '💍'];
+
+        let lastMove = 0;
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, {
+                x: e.clientX - 12,
+                y: e.clientY - 12,
+                duration: 0.1
+            });
+            
+            const now = Date.now();
+            if (now - lastMove > 60) {
+                lastMove = now;
+                createParticle(e.clientX, e.clientY);
+            }
+        });
+
+        function createParticle(x, y) {
+            if (!trailContainer) return;
+            const p = document.createElement('div');
+            p.className = 'heart-particle';
+            p.textContent = trailSymbols[Math.floor(Math.random() * trailSymbols.length)];
+            p.style.left = `${x}px`;
+            p.style.top = `${y}px`;
+            
+            const dx = (Math.random() - 0.5) * 100;
+            const dy = (Math.random() - 0.5) * 100 - 30;
+            const rot = Math.random() * 360;
+            
+            p.style.setProperty('--dx', `${dx}px`);
+            p.style.setProperty('--dy', `${dy}px`);
+            p.style.setProperty('--rot', `${rot}deg`);
+            
+            trailContainer.appendChild(p);
+            
+            setTimeout(() => {
+                p.remove();
+            }, 1500);
+        }
+
+        // Music Mute/Play Control
+        const bgMusic = document.getElementById('bg-music');
+        const musicToggle = document.getElementById('music-toggle');
+
+        if (bgMusic && musicToggle) {
+            bgMusic.volume = 0.55;
+            
+            musicToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (bgMusic.paused) {
+                    bgMusic.play();
+                    musicToggle.classList.remove('paused');
+                } else {
+                    bgMusic.pause();
+                    musicToggle.classList.add('paused');
+                }
+            });
+
+            // Ensure playing states look correct on user click
+            document.addEventListener('click', () => {
+                if (!bgMusic.paused) {
+                    musicToggle.classList.remove('paused');
+                }
+            }, { once: true });
+        }
+
+        // Promises Accordion Interaction
+        const accordionItems = document.querySelectorAll('.promise-item');
+        accordionItems.forEach(item => {
+            const trigger = item.querySelector('.promise-trigger');
+            trigger.addEventListener('click', () => {
+                // Toggle active class on current item
+                const isActive = item.classList.contains('active');
+                
+                // Close all items
+                accordionItems.forEach(i => i.classList.remove('active'));
+                
+                // If it wasn't active, open it
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Polaroid Card entrance animations with GSAP
+        window.addEventListener('load', () => {
+            gsap.from('.memory-card', {
+                opacity: 0,
+                y: 50,
+                stagger: 0.2,
+                duration: 1,
+                ease: "back.out"
+            });
+        });
+
+        // Goodbye button hover effects
+        const goodbyeBtn = document.querySelector('.goodbye-btn');
+        goodbyeBtn.addEventListener('mouseenter', () => {
+            gsap.to(goodbyeBtn, { scale: 1.05, duration: 0.3 });
+        });
+        goodbyeBtn.addEventListener('mouseleave', () => {
+            gsap.to(goodbyeBtn, { scale: 1, duration: 0.3 });
+        });
+    </script>
+</body>
+
+</html>

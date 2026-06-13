@@ -1,0 +1,284 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Quicksand:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: none;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(-45deg, #ffe5ec, #ffc2d1, #ffb3c1, #ff85a1, #fde2e4);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    font-family: 'Quicksand', sans-serif;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Custom Cursor & Trail */
+.cursor {
+    width: 15px;
+    height: 15px;
+    background: #ff4d6d;
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 10000;
+    box-shadow: 0 0 10px rgba(255, 77, 109, 0.8), 0 0 20px rgba(255, 77, 109, 0.4);
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s;
+}
+
+.cursor-trail-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.heart-particle {
+    position: absolute;
+    font-size: 14px;
+    pointer-events: none;
+    animation: floatParticle 1.5s ease-out forwards;
+}
+
+@keyframes floatParticle {
+    0% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(var(--dx), var(--dy)) scale(0.2) rotate(var(--rot));
+        opacity: 0;
+    }
+}
+
+/* Envelope Container */
+.envelope-wrapper {
+    position: relative;
+    width: 500px;
+    height: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+}
+
+.envelope {
+    position: relative;
+    width: 450px;
+    height: 300px;
+    background: #fff0f3;
+    border-radius: 10px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 5px 15px rgba(201, 24, 74, 0.2);
+    cursor: pointer;
+    transition: transform 0.5s ease;
+    transform-style: preserve-3d;
+}
+
+.envelope:hover {
+    transform: translateY(-5px) rotateX(5deg);
+}
+
+.envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #c9184a;
+    clip-path: polygon(0% 0%, 50% 55%, 100% 0%);
+    transform-origin: top;
+    z-index: 4;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.6s;
+    border-radius: 10px 10px 0 0;
+}
+
+.envelope-pocket {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ff4d6d;
+    clip-path: polygon(0% 40%, 50% 70%, 100% 40%, 100% 100%, 0% 100%);
+    z-index: 3;
+    border-radius: 0 0 10px 10px;
+}
+
+/* Heart Seal */
+.envelope-heart-seal {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    z-index: 5;
+    transition: transform 0.3s ease, opacity 0.5s ease;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+    animation: heartBeat 2s infinite;
+}
+
+.envelope-heart-seal:hover {
+    transform: translate(-50%, -50%) scale(1.2);
+}
+
+@keyframes heartBeat {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* Letter Paper */
+.envelope-paper {
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
+    width: 410px;
+    height: 270px;
+    background: #fffaf4;
+    border-radius: 8px;
+    padding: 2rem 1.5rem;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    z-index: 2;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(0);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed rgba(201, 24, 74, 0.4);
+}
+
+.letter-text {
+    width: 100%;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* Typography & Interactive Content */
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #a4133c;
+    text-shadow: 1px 1px 2px rgba(255, 75, 110, 0.3);
+    margin-bottom: 1rem;
+}
+
+.greeting {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem;
+    color: #590d22;
+    margin-bottom: 1.5rem;
+    min-height: 3rem;
+    line-height: 1.4;
+}
+
+.cta-button {
+    padding: 0.8rem 1.8rem;
+    font-size: 1rem;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    background: linear-gradient(45deg, #c9184a, #ff758f);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(201, 24, 74, 0.4);
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.cta-button:hover {
+    transform: translateY(-2px) scale(1.05) !important;
+    box-shadow: 0 10px 20px rgba(216, 75, 118, 0.6);
+}
+
+/* Hint Text */
+.envelope-hint {
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #c9184a;
+    animation: floatHint 3s ease-in-out infinite;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes floatHint {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+/* Envelope Open State styles handled via JS class adding */
+.envelope.open .envelope-flap {
+    transform: rotateX(180deg);
+    z-index: 1;
+}
+
+.envelope.open .envelope-paper {
+    transform: translateY(-135px);
+    z-index: 5;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.envelope.open .envelope-heart-seal {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0);
+}
+
+/* Global animations */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@media (max-width: 768px) {
+    .envelope-wrapper {
+        width: 320px;
+        height: 250px;
+    }
+    .envelope {
+        width: 290px;
+        height: 200px;
+    }
+    .envelope-paper {
+        width: 260px;
+        height: 180px;
+        padding: 1rem;
+    }
+    .envelope-flap {
+        clip-path: polygon(0% 0%, 50% 50%, 100% 0%);
+    }
+    .envelope-pocket {
+        clip-path: polygon(0% 40%, 50% 70%, 100% 40%, 100% 100%, 0% 100%);
+    }
+    .envelope.open .envelope-paper {
+        transform: translateY(-100px);
+    }
+    h1 {
+        font-size: 1.4rem;
+    }
+    .greeting {
+        font-size: 1.1rem;
+        min-height: 2.2rem;
+    }
+    .cta-button {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.8rem;
+    }
+}
